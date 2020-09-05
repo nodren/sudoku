@@ -24,14 +24,14 @@ export const Theme: FC = ({ children }) => {
 				}
 			`}</style>
 			<Head>
-				<title>1</title>
+				<title>Duelduko</title>
 			</Head>
 
 			<div className={`wrapper ${dark ? 'dark' : ''}`}>
 				<div className="container">
 					<Grid columns="1fr auto">
 						<Header as="h3" inverted={dark}>
-							1
+							Duelduko
 						</Header>
 						<Menu />
 					</Grid>

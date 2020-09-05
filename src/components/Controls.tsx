@@ -1,13 +1,16 @@
 import React, { FC } from 'react'
-import { Grid } from './Grid'
 import { Button, Icon } from 'semantic-ui-react'
+
 import { useGameContext } from '../hooks/useGame'
-import { convertBoardToString } from '../utils'
+import { getSocket } from '../socket'
+import { Board } from '../types'
+import { Grid } from './Grid'
 import { NumberButton } from './NumberButton'
+
+const socket = getSocket()
 
 export const Controls: FC = () => {
 	const {
-		dark,
 		notesMode,
 		setNotesMode,
 		solution,
@@ -19,7 +22,23 @@ export const Controls: FC = () => {
 		setActiveBox,
 		setActiveNumber,
 		setGameOver,
+		uuid,
 	} = useGameContext()
+
+	socket.on('update', ({ board, number }: { board: Board; number?: number }) => {
+		console.log('update', board)
+		setBoard(board)
+		if (number) {
+			setActiveNumber(number)
+		}
+		// refresh the board, react isn't handling a deep object update well
+		const oldActive = [...activeBox]
+		setActiveBox([0, 0])
+		setActiveBox(oldActive as any)
+	})
+	socket.on('gameover', (board: Board) => {
+		setGameOver(true)
+	})
 
 	const onNumberClick = (number: number) => () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
@@ -38,34 +57,17 @@ export const Controls: FC = () => {
 			notes[activeBox[1]][activeBox[0]][number] = !notes[activeBox[1]][activeBox[0]][number]
 			setNotes(notes)
 		} else {
-			board[activeBox[1]][activeBox[0]] = number.toString()
-			setActiveNumber(number)
-			setBoard(board)
-			if (convertBoardToString(board) === convertBoardToString(solution)) {
-				setGameOver(true)
-			}
+			socket.emit('guess', uuid, { activeBox, number })
 		}
-		// refresh the board, react isn't handling a deep object update well
-		const oldActive = [...activeBox]
-		setActiveBox([0, 0])
-		setActiveBox(oldActive as any)
 	}
+
 	const onHintClick = () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
 		const solutionSquare = solution[activeBox[1]][activeBox[0]]
 		if (boardSquare !== '0' && boardSquare === solutionSquare) {
 			return
 		}
-		board[activeBox[1]][activeBox[0]] = solutionSquare
-		setActiveNumber(parseInt(solutionSquare, 10))
-		setBoard(board)
-		if (convertBoardToString(board) === convertBoardToString(solution)) {
-			setGameOver(true)
-		}
-		// refresh the board, react isn't handling a deep object update well
-		const oldActive = [...activeBox]
-		setActiveBox([0, 0])
-		setActiveBox(oldActive as any)
+		socket.emit('hint', { activeBox })
 	}
 	const onEraseClick = () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
@@ -74,7 +76,10 @@ export const Controls: FC = () => {
 		if (boardSquare === solutionSquare) {
 			return
 		}
-		board[activeBox[1]][activeBox[0]] = '0'
+		if (boardSquare !== '0') {
+			socket.emit('erase', { activeBox })
+			return
+		}
 		if (!notes[activeBox[1]]) {
 			notes[activeBox[1]] = [] as any
 		}

@@ -2,6 +2,8 @@ import express from 'express'
 import http from 'http'
 import next from 'next'
 import socketio from 'socket.io'
+import { Board } from './types'
+import { convertBoardToString } from './utils'
 
 const app = express()
 const server = new http.Server(app)
@@ -10,6 +12,83 @@ const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
 const nextHandler = nextApp.getRequestHandler()
+
+const boards: Record<string, Board> = {}
+const solutions: Record<string, Board> = {}
+const scores: Record<string, Record<string, number>> = {}
+
+io.on('connection', (socket) => {
+	socket.on('start', (data) => {
+		scores[data] = {}
+		socket.join(data, (err) => {
+			console.log('JOINED CHANNEL', data, socket.rooms, err)
+			scores[data][socket.id] = 0
+			socket.to(data).emit('joined')
+		})
+	})
+
+	socket.on(
+		'ready',
+		(id, { mode, board, solution }: { mode: string; board: Board; solution: Board }) => {
+			console.log('ready', id, socket.rooms)
+			boards[id] = board
+			solutions[id] = solution
+			scores[id] = scores[id] || {}
+			scores[id][socket.id] = 0
+			io.to(id).emit('ready', { mode, board, solution })
+		},
+	)
+
+	socket.on(
+		'guess',
+		(id, { activeBox, number }: { activeBox: [number, number]; number: number }) => {
+			console.log('guess', id, socket.rooms)
+			const boardSquare = boards[id][activeBox[1]][activeBox[0]]
+			const solutionSquare = solutions[id][activeBox[1]][activeBox[0]]
+			if (boardSquare !== '0' && boardSquare === solutionSquare) {
+				//there's an answer and it's correct
+				return
+			}
+			boards[id][activeBox[1]][activeBox[0]] = number.toString()
+			io.to(id).emit('update', { board: boards[id], number })
+			//TODO: score logic goes here
+
+			if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
+				io.to(id).emit('gameover')
+				return
+			}
+		},
+	)
+
+	socket.on('hint', (id, { activeBox }: { activeBox: [number, number] }) => {
+		const boardSquare = boards[id][activeBox[1]][activeBox[0]]
+		const solutionSquare = solutions[id][activeBox[1]][activeBox[0]]
+		if (boardSquare !== '0' && boardSquare === solutionSquare) {
+			//there's an answer and it's correct
+			return
+		}
+		boards[id][activeBox[1]][activeBox[0]] = solutionSquare
+		io.to(id).emit('update', { board: boards[id], number: parseInt(solutionSquare, 10) })
+		//TODO: score logic goes here
+
+		if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
+			io.to(id).emit('gameover')
+			return
+		}
+	})
+
+	socket.on('erase', (id, { activeBox }: { activeBox: [number, number] }) => {
+		const boardSquare = boards[id][activeBox[1]][activeBox[0]]
+		const solutionSquare = solutions[id][activeBox[1]][activeBox[0]]
+
+		if (boardSquare === solutionSquare) {
+			return
+		}
+		boards[id][activeBox[1]][activeBox[0]] = '0'
+		io.to(id).emit('update', { board: boards[id] })
+		//TODO: score logic goes here
+	})
+})
 
 nextApp.prepare().then(() => {
 	app.get('*', (req, res) => {

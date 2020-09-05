@@ -12,6 +12,7 @@ function useTheme() {
 	const [activeBox, setActiveBox] = useState<[number, number]>([0, 0])
 	const [activeNumber, setActiveNumber] = useState<number>(0)
 	const [gameOver, setGameOver] = useState(false)
+	const [uuid, setUuid] = useState<string | undefined>()
 
 	return {
 		dark,
@@ -32,6 +33,8 @@ function useTheme() {
 		setActiveNumber,
 		gameOver,
 		setGameOver,
+		uuid,
+		setUuid,
 	}
 }
 

@@ -1,30 +1,18 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Duelduko
 
-## Getting Started
+## The story
 
-First, run the development server:
+I often enjoy Sudoku, along with my wife. Sometimes when I'm solving a puzle, she'll offer to help and suggest certain numbers to fill in. While the help isn't necessarily needed, it did give me this idea: Competitive Sudoku. My thought was, what if we could each use our own phone to play the same board at the same time, with each of our scores tracked individually, allowing us to compete for the best score.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## The goal
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+I plan on adding a lot more features, and maybe one day getting it on the play store or ios app store, but for now it's really just a fun project I'll run on a server somewhere so I can enjoy a multiplayer version of what was originally just a game you only needed a pencil and piece of paper for.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## The tech
 
-## Learn More
+I wanted to make this relatively simple to run. Apart from starting the server, no other dependencies are required. No redis, no database, nothing. There's no place to login, no storage of any data, just a easy to run server. Next.JS felt like an obvious choice because it's a single command to get the whole thing working.
 
-To learn more about Next.js, take a look at the following resources:
+## How to run
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. `npm install`
+2. `npm start`

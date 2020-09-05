@@ -1,21 +1,10 @@
-import axios from 'axios'
 import Link from 'next/link'
-import { useEffect } from 'react'
 import { Button, Header } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
 
 export default function Home() {
-	const { dark, setBoard, setSolution } = useGameContext()
-
-	useEffect(() => {
-		;(async () => {
-			// const uuid = await axios.get(`/api/uuid`)
-			const puzzle = await axios.get(`/api/generate`)
-			setSolution(puzzle.data.solution)
-			setBoard(puzzle.data.puzzle)
-		})()
-	}, [])
+	const { dark } = useGameContext()
 
 	return (
 		<>
@@ -23,16 +12,16 @@ export default function Home() {
 				Start your game
 			</Header>
 			<Button.Group vertical>
-				<Link href="/play/easy">
+				<Link href="/wait/easy">
 					<Button>Easy</Button>
 				</Link>
-				<Link href="/play/medium">
+				<Link href="/wait/medium">
 					<Button>Medium</Button>
 				</Link>
-				<Link href="/play/hard">
+				<Link href="/wait/hard">
 					<Button>Hard</Button>
 				</Link>
-				<Link href="/play/expert">
+				<Link href="/wait/expert">
 					<Button>Expert</Button>
 				</Link>
 			</Button.Group>

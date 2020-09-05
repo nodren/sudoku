@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
-import io from 'socket.io-client'
 
-const socket = io()
+import { getSocket } from '../socket'
+
+const socket = getSocket()
 
 export default function useSocket(eventName: string, cb: Function) {
 	useEffect(() => {
