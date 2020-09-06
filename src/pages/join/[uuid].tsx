@@ -29,10 +29,6 @@ export default function Home() {
 		})()
 	}, [router.query.uuid])
 
-	if (loading) {
-		return <Loader />
-	}
-
 	return (
 		<>
 			<style jsx>{`

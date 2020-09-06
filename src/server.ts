@@ -3,7 +3,7 @@ import http from 'http'
 import next from 'next'
 import socketio from 'socket.io'
 import { Board } from './types'
-import { convertBoardToString } from './utils'
+import { convertBoardToString, calculateScore } from './utils'
 
 const app = express()
 const server = new http.Server(app)
@@ -19,10 +19,9 @@ const scores: Record<string, Record<string, number>> = {}
 
 io.on('connection', (socket) => {
 	socket.on('start', (data) => {
-		scores[data] = {}
+		scores[data] = scores[data] || {}
 		socket.join(data, (err) => {
 			console.log('JOINED CHANNEL', data, socket.rooms, err)
-			scores[data][socket.id] = 0
 			socket.to(data).emit('joined')
 		})
 	})
@@ -33,8 +32,6 @@ io.on('connection', (socket) => {
 			console.log('ready', id, socket.rooms)
 			boards[id] = board
 			solutions[id] = solution
-			scores[id] = scores[id] || {}
-			scores[id][socket.id] = 0
 			io.to(id).emit('ready', { mode, board, solution })
 		},
 	)
@@ -50,8 +47,10 @@ io.on('connection', (socket) => {
 				return
 			}
 			boards[id][activeBox[1]][activeBox[0]] = number.toString()
-			io.to(id).emit('update', { board: boards[id], number })
-			//TODO: score logic goes here
+			scores[id][socket.id] =
+				(scores[id][socket.id] || 0) +
+				calculateScore(boards[id], solutions[id], activeBox, number)
+			io.to(id).emit('update', { board: boards[id], number, scores: scores[id] })
 
 			if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
 				io.to(id).emit('gameover')
@@ -68,8 +67,13 @@ io.on('connection', (socket) => {
 			return
 		}
 		boards[id][activeBox[1]][activeBox[0]] = solutionSquare
-		io.to(id).emit('update', { board: boards[id], number: parseInt(solutionSquare, 10) })
+		scores[id][socket.id] = (scores[id][socket.id] || 0) - 50
 		//TODO: score logic goes here
+		io.to(id).emit('update', {
+			board: boards[id],
+			number: parseInt(solutionSquare, 10),
+			scores: scores[id],
+		})
 
 		if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
 			io.to(id).emit('gameover')
@@ -85,8 +89,7 @@ io.on('connection', (socket) => {
 			return
 		}
 		boards[id][activeBox[1]][activeBox[0]] = '0'
-		io.to(id).emit('update', { board: boards[id] })
-		//TODO: score logic goes here
+		io.to(id).emit('update', { board: boards[id], scores: scores[id] })
 	})
 })
 

@@ -1,16 +1,19 @@
 import React, { FC } from 'react'
-import { Button, Icon } from 'semantic-ui-react'
+import { Button, Icon, Table, Label } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
+import useSocket from '../hooks/useSocket'
 import { getSocket } from '../socket'
 import { Board } from '../types'
 import { Grid } from './Grid'
 import { NumberButton } from './NumberButton'
+import { processScores } from '../utils'
 
 const socket = getSocket()
 
 export const Controls: FC = () => {
 	const {
+		dark,
 		notesMode,
 		setNotesMode,
 		solution,
@@ -23,20 +26,34 @@ export const Controls: FC = () => {
 		setActiveNumber,
 		setGameOver,
 		uuid,
+		scores,
+		setScores,
 	} = useGameContext()
 
-	socket.on('update', ({ board, number }: { board: Board; number?: number }) => {
-		console.log('update', board)
-		setBoard(board)
-		if (number) {
-			setActiveNumber(number)
-		}
-		// refresh the board, react isn't handling a deep object update well
-		const oldActive = [...activeBox]
-		setActiveBox([0, 0])
-		setActiveBox(oldActive as any)
-	})
-	socket.on('gameover', (board: Board) => {
+	useSocket(
+		'update',
+		({
+			board,
+			number,
+			scores,
+		}: {
+			board: Board
+			number?: number
+			scores: Record<string, number>
+		}) => {
+			console.log('update', scores, socket.id)
+			setBoard(board)
+			setScores(scores)
+			if (number) {
+				setActiveNumber(number)
+			}
+			// refresh the board, react isn't handling a deep object update well
+			const oldActive = [...activeBox]
+			setActiveBox([0, 0])
+			setActiveBox(oldActive as any)
+		},
+	)
+	useSocket('gameover', (board: Board) => {
 		setGameOver(true)
 	})
 
@@ -67,7 +84,7 @@ export const Controls: FC = () => {
 		if (boardSquare !== '0' && boardSquare === solutionSquare) {
 			return
 		}
-		socket.emit('hint', { activeBox })
+		socket.emit('hint', uuid, { activeBox })
 	}
 	const onEraseClick = () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
@@ -77,7 +94,7 @@ export const Controls: FC = () => {
 			return
 		}
 		if (boardSquare !== '0') {
-			socket.emit('erase', { activeBox })
+			socket.emit('erase', uuid, { activeBox })
 			return
 		}
 		if (!notes[activeBox[1]]) {
@@ -94,7 +111,7 @@ export const Controls: FC = () => {
 	}
 
 	return (
-		<Grid rows="auto auto">
+		<Grid rows="auto auto auto">
 			<Grid columns="1fr auto 1fr" padding="1rem">
 				<div />
 				<Button.Group>
@@ -124,6 +141,29 @@ export const Controls: FC = () => {
 				<NumberButton number={8} onClick={onNumberClick(8)} />
 				<NumberButton number={9} onClick={onNumberClick(9)} />
 			</Grid>
+			<Table celled unstackable inverted={dark}>
+				<Table.Header>
+					<Table.Row>
+						<Table.HeaderCell>Scores</Table.HeaderCell>
+						<Table.HeaderCell />
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{processScores(scores).map((score) => (
+						<Table.Row key={`scoreRow_${score.id}`}>
+							<Table.Cell>
+								<Label
+									ribbon
+									color={`${score.id === socket.id ? 'blue' : 'red'}` as any}
+								>
+									{score.id === socket.id ? 'You' : 'Opponent'}
+								</Label>
+							</Table.Cell>
+							<Table.Cell>{score.score.toLocaleString()}</Table.Cell>
+						</Table.Row>
+					))}
+				</Table.Body>
+			</Table>
 		</Grid>
 	)
 }

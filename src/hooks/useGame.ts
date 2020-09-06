@@ -13,6 +13,7 @@ function useTheme() {
 	const [activeNumber, setActiveNumber] = useState<number>(0)
 	const [gameOver, setGameOver] = useState(false)
 	const [uuid, setUuid] = useState<string | undefined>()
+	const [scores, setScores] = useState<Record<string, number>>({})
 
 	return {
 		dark,
@@ -35,6 +36,8 @@ function useTheme() {
 		setGameOver,
 		uuid,
 		setUuid,
+		scores,
+		setScores,
 	}
 }
 

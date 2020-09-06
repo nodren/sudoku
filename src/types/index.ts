@@ -47,3 +47,8 @@ export type Notes = [
 	NoteRow | undefined,
 	NoteRow | undefined,
 ]
+
+export interface Score {
+	id: string
+	score: number
+}
