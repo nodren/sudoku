@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { Button, Icon, Table, Label } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
 import useSocket from '../hooks/useSocket'
@@ -7,13 +7,12 @@ import { getSocket } from '../socket'
 import { Board } from '../types'
 import { Grid } from './Grid'
 import { NumberButton } from './NumberButton'
-import { processScores } from '../utils'
+import { Scores } from './Scores'
 
 const socket = getSocket()
 
 export const Controls: FC = () => {
 	const {
-		dark,
 		notesMode,
 		setNotesMode,
 		solution,
@@ -26,7 +25,6 @@ export const Controls: FC = () => {
 		setActiveNumber,
 		setGameOver,
 		uuid,
-		scores,
 		setScores,
 	} = useGameContext()
 
@@ -141,29 +139,7 @@ export const Controls: FC = () => {
 				<NumberButton number={8} onClick={onNumberClick(8)} />
 				<NumberButton number={9} onClick={onNumberClick(9)} />
 			</Grid>
-			<Table celled unstackable inverted={dark}>
-				<Table.Header>
-					<Table.Row>
-						<Table.HeaderCell>Scores</Table.HeaderCell>
-						<Table.HeaderCell />
-					</Table.Row>
-				</Table.Header>
-				<Table.Body>
-					{processScores(scores).map((score) => (
-						<Table.Row key={`scoreRow_${score.id}`}>
-							<Table.Cell>
-								<Label
-									ribbon
-									color={`${score.id === socket.id ? 'blue' : 'red'}` as any}
-								>
-									{score.id === socket.id ? 'You' : 'Opponent'}
-								</Label>
-							</Table.Cell>
-							<Table.Cell>{score.score.toLocaleString()}</Table.Cell>
-						</Table.Row>
-					))}
-				</Table.Body>
-			</Table>
+			<Scores />
 		</Grid>
 	)
 }

@@ -5,6 +5,7 @@ import { Header } from 'semantic-ui-react'
 import { useGameContext } from '../hooks/useGame'
 import { Grid } from './Grid'
 import { Menu } from './Menu'
+import Link from 'next/link'
 
 export const Theme: FC = ({ children }) => {
 	const { dark } = useGameContext()
@@ -31,7 +32,7 @@ export const Theme: FC = ({ children }) => {
 				<div className="container">
 					<Grid columns="1fr auto">
 						<Header as="h3" inverted={dark}>
-							Duelduko
+							<Link href="/">Duelduko</Link>
 						</Header>
 						<Menu />
 					</Grid>

@@ -6,6 +6,8 @@ import { Board } from '../../components/Board'
 import { Controls } from '../../components/Controls'
 import { useGameContext } from '../../hooks/useGame'
 import useSocket from '../../hooks/useSocket'
+import { Scores } from '../../components/Scores'
+import { Grid } from '../../components/Grid'
 
 export default function Home() {
 	const { dark, board, setBoard, setSolution, gameOver, setUuid } = useGameContext()
@@ -58,7 +60,12 @@ export default function Home() {
 						<Controls />
 					</>
 				) : null}
-				{gameOver ? <div className="game-over">Game over!</div> : null}
+				{gameOver ? (
+					<Grid rows="auto auto">
+						<div className="game-over">Game over!</div>
+						<Scores />
+					</Grid>
+				) : null}
 			</div>
 		</>
 	)

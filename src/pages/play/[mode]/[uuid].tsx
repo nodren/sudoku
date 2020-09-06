@@ -7,6 +7,8 @@ import { Board } from '../../../components/Board'
 import { Controls } from '../../../components/Controls'
 import { useGameContext } from '../../../hooks/useGame'
 import { getSocket } from '../../../socket'
+import { Grid } from '../../../components/Grid'
+import { Scores } from '../../../components/Scores'
 
 const socket = getSocket()
 
@@ -55,7 +57,12 @@ export default function Home() {
 					<Controls />
 				</>
 			) : null}
-			{gameOver ? <div className="game-over">Game over!</div> : null}
+			{gameOver ? (
+				<Grid rows="auto auto">
+					<div className="game-over">Game over!</div>
+					<Scores />
+				</Grid>
+			) : null}
 		</>
 	)
 }
