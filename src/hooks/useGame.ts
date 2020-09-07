@@ -1,9 +1,9 @@
 import constate from 'constate'
 import { useState } from 'react'
-import { Board, Notes } from '../types'
+import { Board, Notes, Answers } from '../types'
 
 function useTheme() {
-	const [dark, setDark] = useState(true)
+	const [dark, setDark] = useState(false)
 	const [board, setBoard] = useState<Board | undefined>(undefined)
 	const [solution, setSolution] = useState<Board | undefined>(undefined)
 	const [notesMode, setNotesMode] = useState<boolean>(false)
@@ -14,10 +14,17 @@ function useTheme() {
 	const [gameOver, setGameOver] = useState(false)
 	const [uuid, setUuid] = useState<string | undefined>()
 	const [scores, setScores] = useState<Record<string, number>>({})
+	const [answers, setAnswers] = useState<Answers>({})
 
 	return {
 		dark,
-		setDark,
+		setDark(mode: boolean) {
+			setDark(mode)
+			localStorage.setItem('dark', `${mode}`)
+		},
+		checkDarkMode() {
+			setDark(localStorage.getItem('dark') === 'true')
+		},
 		board,
 		setBoard,
 		solution,
@@ -38,6 +45,8 @@ function useTheme() {
 		setUuid,
 		scores,
 		setScores,
+		answers,
+		setAnswers,
 	}
 }
 

@@ -8,8 +8,15 @@ import { Board } from '../types'
 import { Grid } from './Grid'
 import { NumberButton } from './NumberButton'
 import { Scores } from './Scores'
+import { formatAnswers } from '../utils'
 
 const socket = getSocket()
+
+interface UpdateProps {
+	board: Board
+	answers: Record<string, string>
+	scores: Record<string, number>
+}
 
 export const Controls: FC = () => {
 	const {
@@ -26,20 +33,19 @@ export const Controls: FC = () => {
 		setGameOver,
 		uuid,
 		setScores,
+		setAnswers,
 	} = useGameContext()
 
-	useSocket(
-		'update',
-		({ board, scores }: { board: Board; number?: number; scores: Record<string, number> }) => {
-			console.log('update', scores, socket.id)
-			setBoard(board)
-			setScores(scores)
-			// refresh the board, react isn't handling a deep object update well
-			const oldActive = [...activeBox]
-			setActiveBox([0, 0])
-			setActiveBox(oldActive as any)
-		},
-	)
+	useSocket('update', ({ board, answers, scores }: UpdateProps) => {
+		console.log('update', scores, socket.id)
+		setBoard(board)
+		setScores(scores)
+		// refresh the board, react isn't handling a deep object update well
+		const oldActive = [...activeBox]
+		setActiveBox([0, 0])
+		setActiveBox(oldActive as any)
+		setAnswers(formatAnswers(answers, socket.id))
+	})
 	useSocket('gameover', (board: Board) => {
 		setGameOver(true)
 	})

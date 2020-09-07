@@ -24,7 +24,7 @@ export const Scores: FC = () => {
 						<Table.Cell>
 							<Label
 								ribbon
-								color={`${score.id === socket.id ? 'blue' : 'red'}` as any}
+								color={`${score.id === socket.id ? 'blue' : 'orange'}` as any}
 							>
 								{score.id === socket.id ? 'You' : 'Opponent'}
 							</Label>

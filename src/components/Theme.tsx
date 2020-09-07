@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React, { FC } from 'react'
+import React, { FC, useEffect } from 'react'
 import { Header } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
@@ -8,7 +8,10 @@ import { Menu } from './Menu'
 import Link from 'next/link'
 
 export const Theme: FC = ({ children }) => {
-	const { dark } = useGameContext()
+	const { dark, checkDarkMode } = useGameContext()
+	useEffect(() => {
+		checkDarkMode()
+	}, [])
 
 	return (
 		<>
@@ -32,9 +35,11 @@ export const Theme: FC = ({ children }) => {
 				<div className="container">
 					<Grid columns="1fr auto">
 						<Link href="/">
-							<Header as="h3" inverted={dark}>
-								Duelduko
-							</Header>
+							<a>
+								<Header as="h3" inverted={dark}>
+									Duelduko
+								</Header>
+							</a>
 						</Link>
 						<Menu />
 					</Grid>

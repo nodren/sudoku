@@ -52,3 +52,5 @@ export interface Score {
 	id: string
 	score: number
 }
+
+export type Answers = Record<string, 'you' | 'opponent'>

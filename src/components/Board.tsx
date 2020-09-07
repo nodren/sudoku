@@ -63,10 +63,14 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 		setActiveBox,
 		setActiveNumber,
 		activeNumber,
+		answers,
 	} = useGameContext()
 	const square = board[rowNum][columnNum]
 	const solutionSquare = solution[rowNum][columnNum]
 
+	if (answers[`${columnNum}:${rowNum}`] === 'you') {
+		console.log(rowNum, columnNum, square)
+	}
 	const classNames = classnames({
 		active: activeBox[0] === columnNum && activeBox[1] === rowNum,
 		['semi-active']:
@@ -75,6 +79,8 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 		border: columnNum !== 0 && columnNum % 3 === 0,
 		['active-number']: square !== '0' && parseInt(square, 10) === activeNumber,
 		error: square !== '0' && square !== solutionSquare,
+		['your-guess']: answers[`${columnNum}:${rowNum}`] === 'you',
+		['opponent-guess']: answers[`${columnNum}:${rowNum}`] === 'opponent',
 		box: true,
 	})
 	const onClick = () => {
@@ -94,6 +100,7 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 					border-left: 2px solid ${dark ? '#aaa' : '#333'};
 				}
 				.active {
+					color: white !important;
 					background-color: ${dark ? 'dodgerblue' : 'lightblue'} !important;
 				}
 				.semi-active {
@@ -103,6 +110,12 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 					background-color: ${dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'};
 					font-weight: bolder;
 					font-size: 16px;
+				}
+				.your-guess {
+					color: ${dark ? 'dodgerblue' : 'deepskyblue'};
+				}
+				.opponent-guess {
+					color: orange;
 				}
 				.error {
 					color: ${dark ? 'darkred' : 'red'};

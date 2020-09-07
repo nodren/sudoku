@@ -1,4 +1,4 @@
-import { Board, Score } from './types'
+import { Board, Score, Answers } from './types'
 
 export function convertBoardToString(board: Board) {
 	const boardRows = []
@@ -61,4 +61,16 @@ export function processScores(scores: Record<string, number>): [Score, Score] {
 		return scoreB.score - scoreA.score
 	})
 	return ret
+}
+
+export function formatAnswers(answers: Record<string, string>, id: string): Answers {
+	const formattedAnswers: Answers = {}
+	for (const [box, playerId] of Object.entries(answers)) {
+		if (playerId === id) {
+			formattedAnswers[box] = 'you'
+		} else {
+			formattedAnswers[box] = 'opponent'
+		}
+	}
+	return formattedAnswers
 }

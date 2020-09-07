@@ -14,6 +14,7 @@ const nextApp = next({ dev })
 const nextHandler = nextApp.getRequestHandler()
 
 const boards: Record<string, Board> = {}
+const answers: Record<string, Record<string, string>> = {}
 const solutions: Record<string, Board> = {}
 const scores: Record<string, Record<string, number>> = {}
 
@@ -32,6 +33,7 @@ io.on('connection', (socket) => {
 			console.log('ready', id, socket.rooms)
 			boards[id] = board
 			solutions[id] = solution
+			answers[id] = {}
 			io.to(id).emit('ready', { mode, board, solution })
 		},
 	)
@@ -47,10 +49,15 @@ io.on('connection', (socket) => {
 				return
 			}
 			boards[id][activeBox[1]][activeBox[0]] = number.toString()
+			answers[id][`${activeBox[0]}:${activeBox[1]}`] = socket.id
 			scores[id][socket.id] =
 				(scores[id][socket.id] || 0) +
 				calculateScore(boards[id], solutions[id], activeBox, number)
-			io.to(id).emit('update', { board: boards[id], scores: scores[id] })
+			io.to(id).emit('update', {
+				board: boards[id],
+				answers: answers[id],
+				scores: scores[id],
+			})
 
 			if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
 				io.to(id).emit('gameover')
@@ -71,7 +78,6 @@ io.on('connection', (socket) => {
 		//TODO: score logic goes here
 		io.to(id).emit('update', {
 			board: boards[id],
-			number: parseInt(solutionSquare, 10),
 			scores: scores[id],
 		})
 
@@ -89,6 +95,7 @@ io.on('connection', (socket) => {
 			return
 		}
 		boards[id][activeBox[1]][activeBox[0]] = '0'
+
 		io.to(id).emit('update', { board: boards[id], scores: scores[id] })
 	})
 })
