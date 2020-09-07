@@ -1,6 +1,6 @@
 import Head from 'next/head'
-import React, { FC, useEffect } from 'react'
-import { Header } from 'semantic-ui-react'
+import React, { FC, useEffect, useLayoutEffect } from 'react'
+import { Header, Button } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
 import { Grid } from './Grid'
@@ -12,6 +12,18 @@ export const Theme: FC = ({ children }) => {
 	useEffect(() => {
 		checkDarkMode()
 	}, [])
+
+	const fullScreen = () => {
+		// full screen attempt
+		const nextElem = document.getElementById('__next')
+		if (!document.fullscreenElement) {
+			nextElem.requestFullscreen().catch((err) => {
+				console.log('FAILED!', err)
+			})
+		} else {
+			document.exitFullscreen()
+		}
+	}
 
 	return (
 		<>
@@ -33,7 +45,7 @@ export const Theme: FC = ({ children }) => {
 
 			<div className={`wrapper ${dark ? 'dark' : ''}`}>
 				<div className="container">
-					<Grid columns="1fr auto">
+					<Grid columns="1fr auto auto">
 						<Link href="/">
 							<a>
 								<Header as="h3" inverted={dark}>
@@ -42,6 +54,7 @@ export const Theme: FC = ({ children }) => {
 							</a>
 						</Link>
 						<Menu />
+						<Button icon="expand" onClick={fullScreen} size="tiny" />
 					</Grid>
 					<div className="page">{children}</div>
 				</div>
