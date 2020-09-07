@@ -22,7 +22,6 @@ export const Controls: FC = () => {
 		setBoard,
 		activeBox,
 		setActiveBox,
-		setActiveNumber,
 		setGameOver,
 		uuid,
 		setScores,
@@ -30,21 +29,10 @@ export const Controls: FC = () => {
 
 	useSocket(
 		'update',
-		({
-			board,
-			number,
-			scores,
-		}: {
-			board: Board
-			number?: number
-			scores: Record<string, number>
-		}) => {
+		({ board, scores }: { board: Board; number?: number; scores: Record<string, number> }) => {
 			console.log('update', scores, socket.id)
 			setBoard(board)
 			setScores(scores)
-			if (number) {
-				setActiveNumber(number)
-			}
 			// refresh the board, react isn't handling a deep object update well
 			const oldActive = [...activeBox]
 			setActiveBox([0, 0])

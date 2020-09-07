@@ -50,7 +50,7 @@ io.on('connection', (socket) => {
 			scores[id][socket.id] =
 				(scores[id][socket.id] || 0) +
 				calculateScore(boards[id], solutions[id], activeBox, number)
-			io.to(id).emit('update', { board: boards[id], number, scores: scores[id] })
+			io.to(id).emit('update', { board: boards[id], scores: scores[id] })
 
 			if (convertBoardToString(boards[id]) === convertBoardToString(solutions[id])) {
 				io.to(id).emit('gameover')
