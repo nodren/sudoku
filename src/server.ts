@@ -7,7 +7,7 @@ import { convertBoardToString, calculateScore } from './utils'
 
 const app = express()
 const server = new http.Server(app)
-const io = socketio(server)
+const io = socketio(server, { path: '/socketio' })
 const port = parseInt(process.env.PORT, 10) || 3000
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
