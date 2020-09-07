@@ -22,6 +22,7 @@ export const Controls: FC = () => {
 		setBoard,
 		activeBox,
 		setActiveBox,
+		setActiveNumber,
 		setGameOver,
 		uuid,
 		setScores,
@@ -61,6 +62,7 @@ export const Controls: FC = () => {
 			setNotes(notes)
 		} else {
 			socket.emit('guess', uuid, { activeBox, number })
+			setActiveNumber(number)
 		}
 	}
 
