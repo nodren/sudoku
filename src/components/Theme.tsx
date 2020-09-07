@@ -31,9 +31,11 @@ export const Theme: FC = ({ children }) => {
 			<div className={`wrapper ${dark ? 'dark' : ''}`}>
 				<div className="container">
 					<Grid columns="1fr auto">
-						<Header as="h3" inverted={dark}>
-							<Link href="/">Duelduko</Link>
-						</Header>
+						<Link href="/">
+							<Header as="h3" inverted={dark}>
+								Duelduko
+							</Header>
+						</Link>
 						<Menu />
 					</Grid>
 					<div className="page">{children}</div>
