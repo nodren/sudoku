@@ -14,7 +14,7 @@
 		"constate": "^2.0.0",
 		"copy-to-clipboard": "^3.3.1",
 		"express": "^4.17.1",
-		"next": "9.5.2",
+		"next": "9.5.3",
 		"react": "16.13.1",
 		"react-dom": "16.13.1",
 		"semantic-ui-css": "^2.4.1",
