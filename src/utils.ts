@@ -27,7 +27,7 @@ export function calculateScore(
 	}
 	//check if the game is over
 	if (convertBoardToString(board) === convertBoardToString(solution)) {
-		bonus += 50
+		return 50
 	}
 	//check the row
 	const row = board[activeBox[1]]
