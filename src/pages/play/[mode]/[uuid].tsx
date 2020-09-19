@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Loader } from 'semantic-ui-react'
+import { Button, Loader } from 'semantic-ui-react'
 
 import { Board } from '../../../components/Board'
 import { Controls } from '../../../components/Controls'
@@ -9,6 +9,7 @@ import { useGameContext } from '../../../hooks/useGame'
 import { getSocket } from '../../../socket'
 import { Grid } from '../../../components/Grid'
 import { Scores } from '../../../components/Scores'
+import Link from 'next/link'
 
 const socket = getSocket()
 
@@ -58,9 +59,14 @@ export default function Home() {
 				</>
 			) : null}
 			{gameOver ? (
-				<Grid rows="auto auto">
+				<Grid rows="auto auto auto">
 					<div className="game-over">Game over!</div>
 					<Scores />
+					<Link href="/">
+						<a>
+							<Button primary>Play Again</Button>
+						</a>
+					</Link>
 				</Grid>
 			) : null}
 		</>

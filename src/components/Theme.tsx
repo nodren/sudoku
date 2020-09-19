@@ -46,13 +46,9 @@ export const Theme: FC = ({ children }) => {
 			<div className={`wrapper ${dark ? 'dark' : ''}`}>
 				<div className="container">
 					<Grid columns="1fr auto auto">
-						<Link href="/">
-							<a>
-								<Header as="h3" inverted={dark}>
-									Duelduko
-								</Header>
-							</a>
-						</Link>
+						<Header as="h3" inverted={dark}>
+							Duelduko
+						</Header>
 						<Menu />
 						<Button icon="expand" onClick={fullScreen} size="tiny" />
 					</Grid>

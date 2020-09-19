@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
-import { Header, Loader } from 'semantic-ui-react'
+import { Button, Header, Loader } from 'semantic-ui-react'
 
 import { Board } from '../../components/Board'
 import { Controls } from '../../components/Controls'
@@ -8,6 +8,7 @@ import { useGameContext } from '../../hooks/useGame'
 import useSocket from '../../hooks/useSocket'
 import { Scores } from '../../components/Scores'
 import { Grid } from '../../components/Grid'
+import Link from 'next/link'
 
 export default function Home() {
 	const { dark, board, setBoard, setSolution, gameOver, setUuid } = useGameContext()
@@ -61,9 +62,14 @@ export default function Home() {
 					</>
 				) : null}
 				{gameOver ? (
-					<Grid rows="auto auto">
+					<Grid rows="auto auto auto">
 						<div className="game-over">Game over!</div>
 						<Scores />
+						<Link href="/">
+							<a>
+								<Button primary>Play Again</Button>
+							</a>
+						</Link>
 					</Grid>
 				) : null}
 			</div>

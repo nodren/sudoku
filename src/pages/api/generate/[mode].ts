@@ -3,6 +3,15 @@ import { Request, Response } from 'express'
 
 export default async (req: Request, res: Response) => {
 	const sudoku = await axios.get(`https://sudoku.com/api/getLevel/${req.query.mode}`)
+	// const sudoku = {
+	// 	data: {
+	// 		desc: [
+	// 			'865479213374162859129538476917254368432687591658913742581726934743891625296345180',
+	// 			'865479213374162859129538476917254368432687591658913742581726934743891625296345187',
+	// 		],
+	// 	},
+	// }
+	console.log(sudoku.data.desc)
 	res.statusCode = 200
 	res.json({
 		puzzle: convertToPuzzle(sudoku.data.desc[0]),

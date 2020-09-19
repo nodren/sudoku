@@ -12,7 +12,6 @@ export const Board: FC = () => {
 			<style jsx global>{`
 				.board {
 					border: 2px solid ${dark ? '#fff' : '#000'};
-					margin-top: 2rem;
 				}
 			`}</style>
 			<Grid columns={1} rows={9} className="board">
