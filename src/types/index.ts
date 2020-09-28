@@ -1,4 +1,4 @@
-export type FullRow = [string, string, string, string, string, string, string, string, string]
+export type FullRow = [number, number, number, number, number, number, number, number, number]
 
 export type Board = [
 	FullRow,

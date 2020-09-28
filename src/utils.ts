@@ -1,17 +1,5 @@
-import { Board, Score, Answers } from './types'
-
-export function convertBoardToString(board: Board) {
-	const boardRows = []
-	for (const row of board) {
-		boardRows.push(row.join(''))
-	}
-	return boardRows.join('')
-}
-
-export function countNumberOnBoard(board: Board, number: number) {
-	const boardStr = convertBoardToString(board)
-	return boardStr.split(number.toString()).length - 1
-}
+import { convertBoardToString } from './sudoku/utils'
+import { Answers, Board, Score } from './types'
 
 export function calculateScore(
 	board: Board,
@@ -31,12 +19,12 @@ export function calculateScore(
 	}
 	//check the row
 	const row = board[activeBox[1]]
-	if (!row.includes('0')) {
+	if (!row.includes(0)) {
 		bonus += 50
 	}
 	//check the column
 	const zeroColumn = board.find((row) => {
-		return row[activeBox[0]] === '0'
+		return row[activeBox[0]] === 0
 	})
 	if (!zeroColumn) {
 		bonus += 50

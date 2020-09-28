@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import classnames from 'classnames'
-import { countNumberOnBoard } from '../utils'
 import { useGameContext } from '../hooks/useGame'
+import { countNumberOnBoard } from '../sudoku/utils'
 
 interface Props {
 	number: number

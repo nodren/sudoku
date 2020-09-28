@@ -1,11 +1,10 @@
 import Head from 'next/head'
-import React, { FC, useEffect, useLayoutEffect } from 'react'
-import { Header, Button } from 'semantic-ui-react'
+import React, { FC, useEffect } from 'react'
+import { Button, Header } from 'semantic-ui-react'
 
 import { useGameContext } from '../hooks/useGame'
 import { Grid } from './Grid'
 import { Menu } from './Menu'
-import Link from 'next/link'
 
 export const Theme: FC = ({ children }) => {
 	const { dark, checkDarkMode } = useGameContext()

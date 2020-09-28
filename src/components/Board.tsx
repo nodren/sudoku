@@ -76,15 +76,15 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 			(activeBox[0] === columnNum && activeBox[1] !== rowNum) ||
 			(activeBox[0] !== columnNum && activeBox[1] === rowNum),
 		border: columnNum !== 0 && columnNum % 3 === 0,
-		['active-number']: square !== '0' && parseInt(square, 10) === activeNumber,
-		error: square !== '0' && square !== solutionSquare,
+		['active-number']: square !== 0 && square === activeNumber,
+		error: square !== 0 && square !== solutionSquare,
 		['your-guess']: answers[`${columnNum}:${rowNum}`] === 'you',
 		['opponent-guess']: answers[`${columnNum}:${rowNum}`] === 'opponent',
 		box: true,
 	})
 	const onClick = () => {
 		setActiveBox([columnNum, rowNum])
-		setActiveNumber(parseInt(square, 10))
+		setActiveNumber(square)
 	}
 
 	return (
@@ -121,7 +121,7 @@ const Box: FC<BoxProps> = ({ rowNum, columnNum }) => {
 				}
 			`}</style>
 			<div className={classNames} onClick={onClick}>
-				{square === '0' ? <BoxNotes rowNum={rowNum} columnNum={columnNum} /> : square}
+				{square === 0 ? <BoxNotes rowNum={rowNum} columnNum={columnNum} /> : square}
 			</div>
 		</>
 	)

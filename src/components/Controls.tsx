@@ -14,7 +14,7 @@ const socket = getSocket()
 
 interface UpdateProps {
 	board: Board
-	answers: Record<string, string>
+	answers?: Record<string, string>
 	scores: Record<string, number>
 }
 
@@ -44,7 +44,9 @@ export const Controls: FC = () => {
 		const oldActive = [...activeBox]
 		setActiveBox([0, 0])
 		setActiveBox(oldActive as any)
-		setAnswers(formatAnswers(answers, socket.id))
+		if (answers) {
+			setAnswers(formatAnswers(answers, socket.id))
+		}
 	})
 	useSocket('gameover', (board: Board) => {
 		setGameOver(true)
@@ -53,7 +55,7 @@ export const Controls: FC = () => {
 	const onNumberClick = (number: number) => () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
 		const solutionSquare = solution[activeBox[1]][activeBox[0]]
-		if (boardSquare !== '0' && boardSquare === solutionSquare) {
+		if (boardSquare !== 0 && boardSquare === solutionSquare) {
 			//there's an answer and it's correct
 			return
 		}
@@ -75,7 +77,7 @@ export const Controls: FC = () => {
 	const onHintClick = () => {
 		const boardSquare = board[activeBox[1]][activeBox[0]]
 		const solutionSquare = solution[activeBox[1]][activeBox[0]]
-		if (boardSquare !== '0' && boardSquare === solutionSquare) {
+		if (boardSquare !== 0 && boardSquare === solutionSquare) {
 			return
 		}
 		socket.emit('hint', uuid, { activeBox })
@@ -87,7 +89,7 @@ export const Controls: FC = () => {
 		if (boardSquare === solutionSquare) {
 			return
 		}
-		if (boardSquare !== '0') {
+		if (boardSquare !== 0) {
 			socket.emit('erase', uuid, { activeBox })
 			return
 		}

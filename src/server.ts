@@ -2,8 +2,9 @@ import express from 'express'
 import http from 'http'
 import next from 'next'
 import socketio from 'socket.io'
+import { convertBoardToString } from './sudoku/utils'
 import { Board } from './types'
-import { convertBoardToString, calculateScore } from './utils'
+import { calculateScore } from './utils'
 
 const app = express()
 const server = new http.Server(app)
@@ -44,11 +45,11 @@ io.on('connection', (socket) => {
 			console.log('guess', id, socket.rooms)
 			const boardSquare = boards[id][activeBox[1]][activeBox[0]]
 			const solutionSquare = solutions[id][activeBox[1]][activeBox[0]]
-			if (boardSquare !== '0' && boardSquare === solutionSquare) {
+			if (boardSquare !== 0 && boardSquare === solutionSquare) {
 				//there's an answer and it's correct
 				return
 			}
-			boards[id][activeBox[1]][activeBox[0]] = number.toString()
+			boards[id][activeBox[1]][activeBox[0]] = number
 			answers[id][`${activeBox[0]}:${activeBox[1]}`] = socket.id
 			scores[id][socket.id] =
 				(scores[id][socket.id] || 0) +
@@ -69,7 +70,7 @@ io.on('connection', (socket) => {
 	socket.on('hint', (id, { activeBox }: { activeBox: [number, number] }) => {
 		const boardSquare = boards[id][activeBox[1]][activeBox[0]]
 		const solutionSquare = solutions[id][activeBox[1]][activeBox[0]]
-		if (boardSquare !== '0' && boardSquare === solutionSquare) {
+		if (boardSquare !== 0 && boardSquare === solutionSquare) {
 			//there's an answer and it's correct
 			return
 		}
@@ -78,6 +79,7 @@ io.on('connection', (socket) => {
 		//TODO: score logic goes here
 		io.to(id).emit('update', {
 			board: boards[id],
+			answers: answers[id],
 			scores: scores[id],
 		})
 
@@ -94,9 +96,13 @@ io.on('connection', (socket) => {
 		if (boardSquare === solutionSquare) {
 			return
 		}
-		boards[id][activeBox[1]][activeBox[0]] = '0'
+		boards[id][activeBox[1]][activeBox[0]] = 0
 
-		io.to(id).emit('update', { board: boards[id], scores: scores[id] })
+		io.to(id).emit('update', {
+			board: boards[id],
+			answers: answers[id],
+			scores: scores[id],
+		})
 	})
 })
 
